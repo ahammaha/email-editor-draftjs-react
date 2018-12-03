@@ -1,0 +1,23 @@
+.modal-header{
+  background-color: black !important;
+  color: white !important;
+}
+
+.create-email {
+    position:fixed;
+    bottom:0px;
+    right:100px;
+    margin:0px;
+}
+
+.modal-header>button{
+  color: white;
+  opacity: 1 ;
+}
+
+.modal-header>button:hover{
+  color: white;
+  background-color: #747171;
+  opacity: 1;
+  padding: 3px;
+}
