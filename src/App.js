@@ -25,7 +25,7 @@ class App extends React.Component {
     this.ccAddrChange = this.ccAddrChange.bind(this);
     this.bccAddrChange = this.bccAddrChange.bind(this);
     this.subjectChange = this.subjectChange.bind(this);
-    this.update = this.update.bind(this);
+    this.updateMailContent = this.updateMailContent.bind(this);
   }
 
   toAddrChange(e) {
