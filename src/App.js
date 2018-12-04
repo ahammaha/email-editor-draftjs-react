@@ -89,10 +89,11 @@ class App extends React.Component {
         <Button bsStyle="primary" onClick={this.openModal}>
           Create Email
         </Button>
+        <hr />
         <Button bsStyle="primary" onClick={this.openModalWithContent}>
           Create Email with template
         </Button>
-        <Modal show={this.state.modalIsOpen} 
+        <Modal show={this.state.modalIsOpen} backdrop="static"
                 onHide={this.closeModal} dialogClassName="create-email">
           <Modal.Header closeButton>
             <Modal.Title>New Message</Modal.Title>
@@ -118,7 +119,7 @@ class App extends React.Component {
               this.state.showCc && 
               <div>
                 <label htmlFor="cc">Cc</label>
-                <input type="text" value="ccAddr" onChange={this.ccAddrChange}
+                <input type="text" value={this.state.ccAddr} onChange={this.ccAddrChange}
                        name="cc" id="cc" />
                 { !this.state.showBcc && 
                   <span onClick={this.showBccInput}>Bcc</span>
