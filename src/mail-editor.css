@@ -5,3 +5,7 @@
 .email-editor{
 	min-height: 350px;
 }
+
+.mail-editor-link>.rdw-link-modal-target-option{
+	display: none;
+}

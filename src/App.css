@@ -6,7 +6,7 @@
 .create-email {
     position:fixed;
     bottom:0px;
-    right:100px;
+    right:200px;
     margin:0px;
 }
 
@@ -20,4 +20,8 @@
   background-color: #747171;
   opacity: 1;
   padding: 3px;
+}
+
+.rdw-image-modal-size{
+  display: none;
 }
