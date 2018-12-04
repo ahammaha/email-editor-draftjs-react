@@ -1,17 +1,30 @@
 import React from "react";
-import { EditorState, convertToRaw } from 'draft-js';
+import { EditorState, convertToRaw, ContentState } from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import draftToHtml from 'draftjs-to-html';
-import "./mail-editor.css"
+import "./mail-editor.css";
+import htmlToDraft from 'html-to-draftjs';
 
 class MailEditor extends React.Component{
 	constructor(props) {
 	    super(props);
-	    this.state = {
-	      editorState: EditorState.createEmpty(),
-	      uploadedImages: []
-	    };
+	    if(this.props.createWithTemplate){
+	    	const contentBlock = htmlToDraft(this.props.mailTemplate);
+    		if (contentBlock) {
+      			const contentState = ContentState.createFromBlockArray(contentBlock.contentBlocks);
+      			const editorState = EditorState.createWithContent(contentState);
+      			this.state={
+      				editorState:editorState,
+      				uploadedImages: []
+      			}
+	    	}
+	    } else {
+	    	this.state = {
+	      		editorState: EditorState.createEmpty(),
+	      		uploadedImages: []
+	    	};
+	    }
 	    this.onEditorStateChange=this.onEditorStateChange.bind(this);
 	    this.uploadImageCallBack=this.uploadImageCallBack.bind(this);
 	}

@@ -14,7 +14,9 @@ class App extends React.Component {
       ccAddr:"",
       bccAddr:"",
       mailContent:"",
-      subject:""
+      subject:"",
+      openWithTemplate:false,
+      mailTemplate:"<p>Dear <span style='background-color: rgb(209,213,216);'>&lt;Recipient&gt;</span>,</p><p>Please find the <a href='http://google.com' target='_blank'>link</a>  over here.</p><p></p><p>Thanks and regards,</p><p><span style='background-color: rgb(209,213,216);'>&lt;Sender's name&gt;</span></p>"
     };
     this.showCcInput = this.showCcInput.bind(this);
     this.showBccInput = this.showBccInput.bind(this);
@@ -26,6 +28,7 @@ class App extends React.Component {
     this.bccAddrChange = this.bccAddrChange.bind(this);
     this.subjectChange = this.subjectChange.bind(this);
     this.updateMailContent = this.updateMailContent.bind(this);
+    this.openModalWithContent=this.openModalWithContent.bind(this);
   }
 
   toAddrChange(e) {
@@ -59,7 +62,11 @@ class App extends React.Component {
   }
  
   closeModal() {
-    this.setState({modalIsOpen: false,showCc:false,showBcc:false});
+    this.setState({
+      modalIsOpen: false,
+      showCc:false,
+      showBcc:false,
+      openWithTemplate:false});
   }
   showCcInput() {
     this.setState({showCc:true})
@@ -72,11 +79,18 @@ class App extends React.Component {
     this.setState({mailContent:val})
   }
 
+  openModalWithContent(){
+    this.setState({modalIsOpen:true,openWithTemplate:true})
+  }
+
   render(){
     return(
       <div>
         <Button bsStyle="primary" onClick={this.openModal}>
           Create Email
+        </Button>
+        <Button bsStyle="primary" onClick={this.openModalWithContent}>
+          Create Email with template
         </Button>
         <Modal show={this.state.modalIsOpen} 
                 onHide={this.closeModal} dialogClassName="create-email">
@@ -129,7 +143,12 @@ class App extends React.Component {
                       onChange={this.subjectChange} name="subject" />
               </span>
             </div>
-            <MailEditor updateMailContent={this.updateMailContent} />
+            { !this.state.openWithTemplate &&
+              <MailEditor updateMailContent={this.updateMailContent} createWithTemplate={false} />
+            }
+            { this.state.openWithTemplate &&
+              <MailEditor updateMailContent={this.updateMailContent} createWithTemplate={true} mailTemplate={this.state.mailTemplate} />
+            }
           </Modal.Body>
 
           <Modal.Footer>
