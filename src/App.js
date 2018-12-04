@@ -18,33 +18,17 @@ class App extends React.Component {
       openWithTemplate:false,
       mailTemplate:"<p>Dear <span style='background-color: rgb(209,213,216);'>&lt;Recipient&gt;</span>,</p><p>Please find the <a href='http://google.com' target='_blank'>link</a>  over here.</p><p></p><p>Thanks and regards,</p><p><span style='background-color: rgb(209,213,216);'>&lt;Sender's name&gt;</span></p>"
     };
-    this.showCcInput = this.showCcInput.bind(this);
-    this.showBccInput = this.showBccInput.bind(this);
+    this.showInputField = this.showInputField.bind(this);
     this.openModal = this.openModal.bind(this);
     this.closeModal = this.closeModal.bind(this);
     this.sendEmail = this.sendEmail.bind(this);
-    this.toAddrChange = this.toAddrChange.bind(this);
-    this.ccAddrChange = this.ccAddrChange.bind(this);
-    this.bccAddrChange = this.bccAddrChange.bind(this);
-    this.subjectChange = this.subjectChange.bind(this);
+    this.onInputChange = this.onInputChange.bind(this);
     this.updateMailContent = this.updateMailContent.bind(this);
     this.openModalWithContent=this.openModalWithContent.bind(this);
   }
 
-  toAddrChange(e) {
-    this.setState({toAddr:e.target.value});
-  }
-
-  ccAddrChange(e) {
-    this.setState({ccAddr:e.target.value});
-  }
-
-  bccAddrChange(e) {
-    this.setState({bccAddr:e.target.value});
-  }
-
-  subjectChange(e) {
-    this.setState({subject:e.target.value});
+  onInputChange(fieldName,e) {
+    this.setState({[fieldName]:e.target.value});
   }
 
   sendEmail() {
@@ -68,15 +52,13 @@ class App extends React.Component {
       showBcc:false,
       openWithTemplate:false});
   }
-  showCcInput() {
-    this.setState({showCc:true})
-  }
-  showBccInput() {
-    this.setState({showBcc:true})
+
+  showInputField(fieldName){
+    this.setState({[fieldName]:true})
   }
 
-  updateMailContent(val){
-    this.setState({mailContent:val})
+  updateMailContent(mailContent){
+    this.setState({mailContent})
   }
 
   openModalWithContent(){
@@ -103,26 +85,26 @@ class App extends React.Component {
               <span>
                 <label htmlFor="toAddr">To</label>
                 <input 
-                  type="text" onChange={this.toAddrChange}
+                  type="text" onChange={(e)=>this.onInputChange("toAddr",e)}
                   value={this.state.toAddr} name="toAddr" id="toAddr" />
               </span>
               {
                 !this.state.showCc && !this.state.showBcc && 
-                <span onClick={this.showCcInput}>Cc</span>
+                <span onClick={()=>this.showInputField("showCc")}>Cc</span>
               }
               {
                 !this.state.showCc && !this.state.showBcc && 
-                <span onClick={this.showBccInput}>Bcc</span>
+                <span onClick={()=>this.showInputField("showBcc")}>Bcc</span>
               }
             </div>
             {
               this.state.showCc && 
               <div>
                 <label htmlFor="cc">Cc</label>
-                <input type="text" value={this.state.ccAddr} onChange={this.ccAddrChange}
-                       name="cc" id="cc" />
+                <input type="text" value={this.state.ccAddr} name="cc" id="cc"
+                        onChange={(e)=>this.onInputChange("ccAddr",e)} />
                 { !this.state.showBcc && 
-                  <span onClick={this.showBccInput}>Bcc</span>
+                  <span onClick={()=>this.showInputField("showBcc")}>Bcc</span>
                 }
               </div>
             }
@@ -130,10 +112,10 @@ class App extends React.Component {
               this.state.showBcc && 
               <div>
                 <label htmlFor="bcc">bcc</label>
-                <input value={this.state.bccAddr} onChange={this.bccAddrChange}
-                      type="text" name="bcc" id="bcc" />
+                <input value={this.state.bccAddr} type="text" name="bcc"
+                      onChange={(e)=>this.onInputChange("bccAddr",e)} id="bcc"/>
                 { !this.state.showCc && 
-                  <span onClick={this.showCcInput}>Cc</span>
+                  <span onClick={()=>this.showInputField("showCc")}>Cc</span>
                 }
               </div>
             }
@@ -141,7 +123,7 @@ class App extends React.Component {
               <span>
                 <label htmlFor="subject">Subject</label>
                 <input type="text" value={this.state.subject} id="subject"
-                      onChange={this.subjectChange} name="subject" />
+                      onChange={(e)=>this.onInputChange("subject",e)} name="subject" />
               </span>
             </div>
             { !this.state.openWithTemplate &&
