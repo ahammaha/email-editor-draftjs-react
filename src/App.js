@@ -2,11 +2,15 @@ import React from "react";
 import MailEditor from "./MailEditor";
 import { Modal, Button } from 'react-bootstrap';
 import "./App.css";
+import EmailAddr from "./EmailAddr";
 
 class App extends React.Component {
   constructor(props){
     super(props);
     this.state = {
+      toAddrValues:[],
+      ccAddrValues:[],
+      bccAddrValues:[],
       modalIsOpen: true,
       showCc:false, 
       showBcc:false,
@@ -25,17 +29,38 @@ class App extends React.Component {
     this.onInputChange = this.onInputChange.bind(this);
     this.updateMailContent = this.updateMailContent.bind(this);
     this.openModalWithContent=this.openModalWithContent.bind(this);
+    this.keyPress = this.keyPress.bind(this);
+    this.removeEmail=this.removeEmail.bind(this);
+  }
+
+  removeEmail(email,type){
+    let fieldName=type+"AddrValues";
+    this.setState({[fieldName]: this.state[fieldName].filter(function(val) { 
+        return email!=val
+    })});
+  }
+
+  keyPress(fieldName,inputField,e){
+    if(e.keyCode===13){
+      let email=this.state[inputField].trim();
+      if(email.length>0){
+        this.setState({
+          [fieldName]:[...this.state[fieldName],this.state[inputField]],
+          [inputField]:""
+        })
+      }
+    }
   }
 
   onInputChange(fieldName,e) {
-    this.setState({[fieldName]:e.target.value});
+    this.setState({[fieldName]:e.target.value.trim()});
   }
 
   sendEmail() {
     console.log("==========================================");
-    console.log(this.state.toAddr);
-    console.log(this.state.ccAddr);
-    console.log(this.state.bccAddr);
+    console.log(this.state.toAddrValues);
+    console.log(this.state.ccAddrValues);
+    console.log(this.state.bccAddrValues);
     console.log(this.state.subject);
     console.log(this.state.mailContent);
     console.log("==========================================");
@@ -87,20 +112,23 @@ class App extends React.Component {
                   <tr>
                     <td>
                       <div>
-                        <span class="grey-color-text">To</span>
+                        <span className="grey-color-text">To</span>
                       </div>
                     </td>
                     <td id="toAddrTd">
+                      <EmailAddr type="to" removeEmail={this.removeEmail} 
+                          emailAddrs={this.state.toAddrValues} />
                       <input className="email-editor-input"
+                          onKeyUp={(e)=>this.keyPress("toAddrValues","toAddr",e)}
                           type="text" onChange={(e)=>this.onInputChange("toAddr",e)}
                           value={this.state.toAddr} name="toAddr" id="toAddr" />
                       {
                         !this.state.showCc && !this.state.showBcc && 
-                        <span class="grey-color-text" onClick={()=>this.showInputField("showCc")}>Cc</span>
+                        <span className="grey-color-text" onClick={()=>this.showInputField("showCc")}>Cc</span>
                       }
                       {
                         !this.state.showCc && !this.state.showBcc && 
-                        <span class="grey-color-text" onClick={()=>this.showInputField("showBcc")}>Bcc</span>
+                        <span className="grey-color-text" onClick={()=>this.showInputField("showBcc")}>Bcc</span>
                       }
                     </td>
                   </tr>
@@ -115,15 +143,18 @@ class App extends React.Component {
                     <tr>
                       <td>
                         <div>
-                          <span class="grey-color-text">Cc</span>
+                          <span className="grey-color-text">Cc</span>
                         </div>
                       </td>
                       <td id="toAddrTd">
+                        <EmailAddr type="cc" removeEmail={this.removeEmail} 
+                            emailAddrs={this.state.ccAddrValues} />
                         <input type="text" value={this.state.ccAddr} name="cc" id="cc"
+                          onKeyUp={(e)=>this.keyPress("ccAddrValues","ccAddr",e)}
                           onChange={(e)=>this.onInputChange("ccAddr",e)}
                           className="email-editor-input"  />
                         { !this.state.showBcc && 
-                          <span class="grey-color-text" onClick={()=>this.showInputField("showBcc")}>Bcc</span>
+                          <span className="grey-color-text" onClick={()=>this.showInputField("showBcc")}>Bcc</span>
                         }
                         
                       </td>
@@ -140,15 +171,18 @@ class App extends React.Component {
                     <tr>
                       <td>
                         <div>
-                          <span class="grey-color-text">Bcc</span>
+                          <span className="grey-color-text">Bcc</span>
                         </div>
                       </td>
                       <td id="toAddrTd">
-                          <input value={this.state.bccAddr} type="text" name="bcc"
+                        <EmailAddr type="bcc" removeEmail={this.removeEmail} 
+                            emailAddrs={this.state.bccAddrValues} />
+                        <input value={this.state.bccAddr} type="text" name="bcc"
+                              onKeyUp={(e)=>this.keyPress("bccAddrValues","bccAddr",e)}
                               onChange={(e)=>this.onInputChange("bccAddr",e)} id="bcc"
                               className="email-editor-input"/>
                         { !this.state.showCc &&  
-                          <span class="grey-color-text" onClick={()=>this.showInputField("showCc")}>Cc</span>
+                          <span className="grey-color-text" onClick={()=>this.showInputField("showCc")}>Cc</span>
                         }
                       </td>
                     </tr>

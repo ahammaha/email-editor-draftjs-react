@@ -36,11 +36,10 @@
   outline: none;
   padding: 4px 1px 4px 2px;
   resize: none;
-  -webkit-box-sizing: border-box;
 }
 
 .grey-color-text{
-  color: #8f8f8f;
+  color: #747474;
 }
 
 #subject{
@@ -49,11 +48,12 @@
 
 .email-editor-input{
   line-height: 20px;
-  width: 90%;
+  width: 85%;
 }
 
 #toAddrTd{
   width: 100%;
+  padding-left: 10px; 
 }
 
 #toAddrTd>span{

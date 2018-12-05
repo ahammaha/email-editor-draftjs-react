@@ -1,0 +1,14 @@
+.email-addr-style{
+	background-color: #fff;
+    border: 1px solid #dadce0;
+    border-radius: 12px;
+    padding-left: 8px;
+    line-height: 20px;
+    height: 25px;
+    display: inline-flex;
+}
+
+.close-button{
+	margin-left: 10px;
+	margin-right: 10px;
+}
