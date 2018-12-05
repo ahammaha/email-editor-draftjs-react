@@ -19,8 +19,16 @@ class App extends React.Component {
       bccAddr:"",
       mailContent:"",
       subject:"",
-      openWithTemplate:false,
-      mailTemplate:"<p>Dear <span style='background-color: rgb(209,213,216);'>&lt;Recipient&gt;</span>,</p><p>Please find the <a href='http://google.com' target='_blank'>link</a>  over here.</p><p></p><p>Thanks and regards,</p><p><span style='background-color: rgb(209,213,216);'>&lt;Sender's name&gt;</span></p>"
+      openWithTemplate:true,
+      mailTemplate:"<p>Dear <span style='background-color: rgb(209,213,216);'>"+
+                    "&lt;Recipient&gt;</span>,</p><p>"+
+                    "Please find the <a href='http://google.com' target='_blank'>"+
+                    "link</a>  over here.</p><p></p><p>Thanks and regards,</p><p>"+
+                    "<span style='background-color: rgb(209,213,216);'>"+
+                    "&lt;Sender's name&gt;</span></p>"+
+                    "<blockquote class='attach-file'><a class='attach-file' href='www.google.com'>harry-potter.pdf <span>(63k)</span></a></blockquote>"+
+                    "<blockquote class='attach-file'><a class='attach-file' href='www.google.com'>example.xls</a></blockquote>"+
+                    "<blockquote class='attach-file'><a class='attach-file' href='www.google.com'>test.pdf</a></blockquote>"
     };
     this.showInputField = this.showInputField.bind(this);
     this.openModal = this.openModal.bind(this);
@@ -36,7 +44,7 @@ class App extends React.Component {
   removeEmail(email,type){
     let fieldName=type+"AddrValues";
     this.setState({[fieldName]: this.state[fieldName].filter(function(val) { 
-        return email!=val
+        return email!==val
     })});
   }
 

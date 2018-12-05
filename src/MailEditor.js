@@ -6,6 +6,13 @@ import draftToHtml from 'draftjs-to-html';
 import "./mail-editor.css";
 import htmlToDraft from 'html-to-draftjs';
 
+function myBlockStyleFn(contentBlock) {
+  const type = contentBlock.getType();
+  if (type === 'blockquote') {
+    return 'list-attach-file';
+  }
+}
+
 class MailEditor extends React.Component{
 	constructor(props) {
 	    super(props);
@@ -59,6 +66,7 @@ class MailEditor extends React.Component{
 	render(){
 		return(
 			<Editor
+				blockStyleFn={myBlockStyleFn}
 				//toolbarOnFocus
 				editorState={this.state.editorState}
 				toolbarClassName="email-editor-toolbar"
@@ -88,8 +96,10 @@ class MailEditor extends React.Component{
 						options: [8, 9, 10, 11, 12, 14, 16, 18, 24, 30, 36, 48, 60, 72, 96],
 					},
 					link:{
+						className:"mail-editor-link",
 						defaultTargetOption:'_blank',
-						popupClassName:"mail-editor-link"
+						popupClassName:"mail-editor-link-popup",
+						showOpenOptionOnHover:true
 					},
 					image:{
 						urlEnabled: true,
