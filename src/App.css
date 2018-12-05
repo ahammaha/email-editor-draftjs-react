@@ -26,7 +26,7 @@
   display: none;
 }
 
-#subject{
+#subject,.email-editor-input{
   border: 0px !important;
   box-sizing: border-box;
   color: #222;
@@ -37,5 +37,36 @@
   padding: 4px 1px 4px 2px;
   resize: none;
   -webkit-box-sizing: border-box;
+}
+
+.grey-color-text{
+  color: #8f8f8f;
+}
+
+#subject{
   width: 100%;
+}
+
+.email-editor-input{
+  line-height: 20px;
+  width: 90%;
+}
+
+#toAddrTd{
+  width: 100%;
+}
+
+#toAddrTd>span{
+  padding: 2px;
+}
+
+.modal-footer{
+  text-align: left !important;
+}
+
+table {
+    display: table;
+    border-collapse: separate;
+    border-spacing: 2px;
+    border-color: grey;
 }

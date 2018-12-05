@@ -7,7 +7,7 @@ class App extends React.Component {
   constructor(props){
     super(props);
     this.state = {
-      modalIsOpen: false,
+      modalIsOpen: true,
       showCc:false, 
       showBcc:false,
       toAddr:"",
@@ -82,41 +82,78 @@ class App extends React.Component {
           </Modal.Header>
           <Modal.Body>
             <div>
-              <span>
-                <label htmlFor="toAddr">To</label>
-                <input 
-                  type="text" onChange={(e)=>this.onInputChange("toAddr",e)}
-                  value={this.state.toAddr} name="toAddr" id="toAddr" />
-              </span>
-              {
-                !this.state.showCc && !this.state.showBcc && 
-                <span onClick={()=>this.showInputField("showCc")}>Cc</span>
-              }
-              {
-                !this.state.showCc && !this.state.showBcc && 
-                <span onClick={()=>this.showInputField("showBcc")}>Bcc</span>
-              }
+              <table>
+                <tbody>
+                  <tr>
+                    <td>
+                      <div>
+                        <span class="grey-color-text">To</span>
+                      </div>
+                    </td>
+                    <td id="toAddrTd">
+                      <input className="email-editor-input"
+                          type="text" onChange={(e)=>this.onInputChange("toAddr",e)}
+                          value={this.state.toAddr} name="toAddr" id="toAddr" />
+                      {
+                        !this.state.showCc && !this.state.showBcc && 
+                        <span class="grey-color-text" onClick={()=>this.showInputField("showCc")}>Cc</span>
+                      }
+                      {
+                        !this.state.showCc && !this.state.showBcc && 
+                        <span class="grey-color-text" onClick={()=>this.showInputField("showBcc")}>Bcc</span>
+                      }
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
             {
-              this.state.showCc && 
+              this.state.showCc &&
               <div>
-                <label htmlFor="cc">Cc</label>
-                <input type="text" value={this.state.ccAddr} name="cc" id="cc"
-                        onChange={(e)=>this.onInputChange("ccAddr",e)} />
-                { !this.state.showBcc && 
-                  <span onClick={()=>this.showInputField("showBcc")}>Bcc</span>
-                }
+                <table>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <div>
+                          <span class="grey-color-text">Cc</span>
+                        </div>
+                      </td>
+                      <td id="toAddrTd">
+                        <input type="text" value={this.state.ccAddr} name="cc" id="cc"
+                          onChange={(e)=>this.onInputChange("ccAddr",e)}
+                          className="email-editor-input"  />
+                        { !this.state.showBcc && 
+                          <span class="grey-color-text" onClick={()=>this.showInputField("showBcc")}>Bcc</span>
+                        }
+                        
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             }
             {
               this.state.showBcc && 
               <div>
-                <label htmlFor="bcc">bcc</label>
-                <input value={this.state.bccAddr} type="text" name="bcc"
-                      onChange={(e)=>this.onInputChange("bccAddr",e)} id="bcc"/>
-                { !this.state.showCc && 
-                  <span onClick={()=>this.showInputField("showCc")}>Cc</span>
-                }
+                <table>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <div>
+                          <span class="grey-color-text">Bcc</span>
+                        </div>
+                      </td>
+                      <td id="toAddrTd">
+                          <input value={this.state.bccAddr} type="text" name="bcc"
+                              onChange={(e)=>this.onInputChange("bccAddr",e)} id="bcc"
+                              className="email-editor-input"/>
+                        { !this.state.showCc &&  
+                          <span class="grey-color-text" onClick={()=>this.showInputField("showCc")}>Cc</span>
+                        }
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             }
             <div>
