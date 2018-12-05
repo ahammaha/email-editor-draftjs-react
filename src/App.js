@@ -121,8 +121,8 @@ class App extends React.Component {
             }
             <div>
               <span>
-                <label htmlFor="subject">Subject</label>
                 <input type="text" value={this.state.subject} id="subject"
+                      placeholder="Subject"
                       onChange={(e)=>this.onInputChange("subject",e)} name="subject" />
               </span>
             </div>

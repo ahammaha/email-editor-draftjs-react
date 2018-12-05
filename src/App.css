@@ -25,3 +25,17 @@
 .rdw-image-modal-size{
   display: none;
 }
+
+#subject{
+  border: 0px !important;
+  box-sizing: border-box;
+  color: #222;
+  background-color: white;
+  font-size: .875rem;
+  margin: 0;
+  outline: none;
+  padding: 4px 1px 4px 2px;
+  resize: none;
+  -webkit-box-sizing: border-box;
+  width: 100%;
+}
