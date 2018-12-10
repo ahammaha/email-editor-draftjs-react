@@ -4,6 +4,8 @@
 
 .email-editor{
 	min-height: 350px;
+	max-height: 500px;
+	line-height: normal;
 }
 
 .mail-editor-link-popup>.rdw-link-modal-target-option{
@@ -12,16 +14,13 @@
 
 .list-attach-file{
 	padding: 0px;
+	padding-left: 10px;
 	border: 0px;
 	background-color: #f1f1f1;
 	width:80%;
+	margin: 10px;
 }
-
-.list-attach-file .rdw-link-decorator-wrapper{
-	width: 400px;
-}
-
-.list-attach-file .public-DraftStyleDefault-block{
+.list-attach-file>.list-attach-file-block{
 	background: url(close_button.png) no-repeat;
 	background-size:10px;
 	background-position: 98% 50%;
@@ -35,6 +34,6 @@
 	padding-right: 50px;
 }
 
-.list-attach-file .rdw-link-decorator-icon{
-	display: none;
+.grey-text-color{
+	color: #777;
 }

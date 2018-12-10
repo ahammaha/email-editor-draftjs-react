@@ -1,37 +1,33 @@
 import React from "react";
-import { EditorState, convertToRaw, ContentState } from 'draft-js';
+import { EditorState, convertToRaw, ContentState, DefaultDraftBlockRenderMap, ContentBlock, genKey} from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import draftToHtml from 'draftjs-to-html';
 import "./mail-editor.css";
 import htmlToDraft from 'html-to-draftjs';
+import FileAttachment from "./FileAttachment";
 
-function myBlockStyleFn(contentBlock) {
-  const type = contentBlock.getType();
-  if (type === 'blockquote') {
-    return 'list-attach-file';
-  }
-}
+var { Map, List } = require('immutable');
 
 class MailEditor extends React.Component{
 	constructor(props) {
 	    super(props);
-	    if(this.props.createWithTemplate){
+	    let template=this.props.mailTemplate || ""
+	    let editorState=undefined;
+	    if(template){
 	    	const contentBlock = htmlToDraft(this.props.mailTemplate);
-    		if (contentBlock) {
+	    	if (contentBlock) {
       			const contentState = ContentState.createFromBlockArray(contentBlock.contentBlocks);
-      			const editorState = EditorState.createWithContent(contentState);
-      			this.state={
-      				editorState:editorState,
-      				uploadedImages: []
-      			}
-	    	}
-	    } else {
-	    	this.state = {
-	      		editorState: EditorState.createEmpty(),
-	      		uploadedImages: []
-	    	};
+      			editorState = EditorState.createWithContent(contentState);
+      		}
+	    }else{
+	    	editorState = EditorState.createEmpty();
 	    }
+	    this.state = {
+	    	editorState: editorState,
+	    	uploadedImages: []
+	    };
+	    this.onAddFile=this.onAddFile.bind(this);
 	    this.onEditorStateChange=this.onEditorStateChange.bind(this);
 	    this.uploadImageCallBack=this.uploadImageCallBack.bind(this);
 	}
@@ -39,24 +35,23 @@ class MailEditor extends React.Component{
 		this.setState({editorState});
 		this.props.updateMailContent(draftToHtml(convertToRaw(editorState.getCurrentContent())));
 	}
+	onAddFile = () => {
+		const editorState = EditorState.moveSelectionToEnd(this.state.editorState);
+	    const selection = editorState.getSelection();
+	    this.onEditorStateChange(addNewBlockAt(
+	      this.state.editorState,
+	      selection.getAnchorKey(),
+	      'FileAttachment'
+	    ))
+	}
 	uploadImageCallBack(file){
-		// long story short, every time we upload an image, we
-	    // need to save it to the state so we can get it's data
-	    // later when we decide what to do with it.
-	    // Make sure you have a uploadedImages: [] as your default state
-    	let uploadedImages = this.state.uploadedImages;
+		let uploadedImages = this.state.uploadedImages;
     	const imageObject = {
 	      file: file,
 	      localSrc: URL.createObjectURL(file),
 	    }
 	    uploadedImages.push(imageObject);
-
 	    this.setState({uploadedImages: uploadedImages})
-	    
-	    // We need to return a promise with the image src
-	    // the img src we will use here will be what's needed
-	    // to preview it in the browser. This will be different than what
-	    // we will see in the index.md file we generate.
 	    return new Promise(
 	      (resolve, reject) => {
 	        resolve({ data: { link: imageObject.localSrc } });
@@ -66,14 +61,14 @@ class MailEditor extends React.Component{
 	render(){
 		return(
 			<Editor
-				blockStyleFn={myBlockStyleFn}
-				//toolbarOnFocus
+				blockRenderMap={extendedBlockRenderMap}
+				blockRendererFn={blockRendererFn}
 				editorState={this.state.editorState}
 				toolbarClassName="email-editor-toolbar"
 				wrapperClassName="email-editor-wrapper"
 				editorClassName="email-editor"
 				onEditorStateChange={this.onEditorStateChange}
-				onChange=""
+				toolbarCustomButtons={[<FileAttachmentButton onAddFile={this.onAddFile} />]}
 				toolbar={{
 					options: ['inline', 'fontSize', 'fontFamily',
 								 'list', 'textAlign', 'colorPicker',
@@ -116,6 +111,95 @@ class MailEditor extends React.Component{
 			/>
 		)
 	}
+}
+
+function blockRendererFn(contentBlock) {
+  const type = contentBlock.getType();
+  if(type==="atomic"){
+  	console.log("Atomic : "+type);
+  	return{
+  	}
+  }
+  else if (type === 'FileAttachment') {
+  	console.log("file"+type)
+    return {
+      component: FileAttachment,
+      editable: false,
+      props: {}
+    };
+  }
+}
+
+const addNewBlockAt = (
+  editorState,
+  pivotBlockKey,
+  newBlockType = 'unstyled',
+  initialData = new Map({})
+) => {
+  const content = editorState.getCurrentContent();
+  const blockMap = content.getBlockMap();
+  const block = blockMap.get(pivotBlockKey);
+  if (!block) {
+    throw new Error(`The pivot key - ${ pivotBlockKey } is not present in blockMap.`);
+  }
+
+  const blocksBefore = blockMap.toSeq().takeUntil((v) => (v === block));
+  const blocksAfter = blockMap.toSeq().skipUntil((v) => (v === block)).rest();
+  const newBlockKey = genKey();
+
+  const newBlock = new ContentBlock({
+    key: newBlockKey,
+    type: newBlockType,
+    text: '',
+    characterList: new List(),
+    depth: 0,
+    data: initialData,
+  });
+
+  const newBlockMap = blocksBefore.concat(
+    [[pivotBlockKey, block], [newBlockKey, newBlock]],
+    blocksAfter
+  ).toOrderedMap();
+
+  const selection = editorState.getSelection();
+
+  const newContent = content.merge({
+    blockMap: newBlockMap,
+    selectionBefore: selection,
+    selectionAfter: selection.merge({
+      anchorKey: newBlockKey,
+      anchorOffset: 0,
+      focusKey: newBlockKey,
+      focusOffset: 0,
+      isBackward: false,
+    }),
+  });
+  return EditorState.push(editorState, newContent, 'insert-fragment');
+};
+
+const RenderMap = new Map({
+  FileAttachment: {
+    element: 'article'
+  }
+}).merge(DefaultDraftBlockRenderMap);
+
+const extendedBlockRenderMap = DefaultDraftBlockRenderMap.merge(RenderMap);
+
+class FileAttachmentButton extends React.Component {
+  constructor(props){
+  	super(props);
+  	this.onAddFile=this.onAddFile.bind(this);
+  }
+
+  onAddFile(){
+  	this.props.onAddFile();
+  }
+
+  render() {
+    return (
+      <div className="rdw-storybook-custom-option" onClick={this.onAddFile}>F</div>
+    );
+  }
 }
 
 export default MailEditor;
