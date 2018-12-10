@@ -24,12 +24,12 @@ class MailEditor extends React.Component{
 	    	editorState = EditorState.createEmpty();
 	    }
 	    this.state = {
-	    	editorState: editorState,
-	    	uploadedImages: []
+	    	editorState: editorState//,
+	    	//uploadedImages: []
 	    };
 	    this.onAddFile=this.onAddFile.bind(this);
 	    this.onEditorStateChange=this.onEditorStateChange.bind(this);
-	    this.uploadImageCallBack=this.uploadImageCallBack.bind(this);
+	    //this.uploadImageCallBack=this.uploadImageCallBack.bind(this);
 	}
 	onEditorStateChange=(editorState) => {
 		this.setState({editorState});
@@ -44,7 +44,7 @@ class MailEditor extends React.Component{
 	      'FileAttachment'
 	    ))
 	}
-	uploadImageCallBack(file){
+	/*uploadImageCallBack(file){
 		let uploadedImages = this.state.uploadedImages;
     	const imageObject = {
 	      file: file,
@@ -57,7 +57,7 @@ class MailEditor extends React.Component{
 	        resolve({ data: { link: imageObject.localSrc } });
 	      }
 	    )
-	}
+	}*/
 	render(){
 		return(
 			<Editor
@@ -72,7 +72,7 @@ class MailEditor extends React.Component{
 				toolbar={{
 					options: ['inline', 'fontSize', 'fontFamily',
 								 'list', 'textAlign', 'colorPicker',
-								 'link', 'image'],
+								 'link'/*, 'image'*/],
 					textAlign: { 
 						inDropdown: true,
 						options: ['left', 'center', 'right'],
@@ -95,7 +95,7 @@ class MailEditor extends React.Component{
 						defaultTargetOption:'_blank',
 						popupClassName:"mail-editor-link-popup",
 						showOpenOptionOnHover:true
-					},
+					}/*,
 					image:{
 						urlEnabled: true,
 						uploadEnabled:true,
@@ -105,7 +105,7 @@ class MailEditor extends React.Component{
 							height: 'auto',
 							width: 'auto',
 					    }
-					}
+					}*/
 				}
   				}
 			/>
@@ -115,14 +115,8 @@ class MailEditor extends React.Component{
 
 function blockRendererFn(contentBlock) {
   const type = contentBlock.getType();
-  if(type==="atomic"){
-  	console.log("Atomic : "+type);
-  	return{
-  	}
-  }
-  else if (type === 'FileAttachment') {
-  	console.log("file"+type)
-    return {
+  if (type === 'FileAttachment') {
+  	return {
       component: FileAttachment,
       editable: false,
       props: {}
