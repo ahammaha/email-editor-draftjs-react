@@ -119,7 +119,11 @@ function blockRendererFn(contentBlock) {
   	return {
       component: FileAttachment,
       editable: false,
-      props: {}
+      props: {
+      	fileName:"fileName.txt",
+      	size:"30k",
+      	src:"http://icons.iconarchive.com/icons/graphicloads/100-flat/256/home-icon.png"
+      }
     };
   }
 }
